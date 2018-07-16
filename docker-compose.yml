@@ -1,0 +1,17 @@
+version: "3"
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.Dev
+    volumes:
+      - .:/go/src/app
+    environment:
+      MONGO_HOST: mongo
+    depends_on:
+      - redis
+      - mongo
+  redis:
+    image: redis:4.0.9-alpine
+  mongo:
+    image: mongo

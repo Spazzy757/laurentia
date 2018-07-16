@@ -1,0 +1,20 @@
+<html>
+<head>
+    <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+</head>
+
+<body>
+<h3>PubSub Live Stream</h3>
+<pre id="output"></pre>
+
+<script>
+    url = 'wss://pangea-staging.vumatel.co.za/laurentia/ws?apikey=gj61ilg0dd9qPRd9HmzxXEuQGfV376iC';
+    c = new WebSocket(url);
+    c.onmessage = function(msg){
+        $("#output").append((new Date())+ " <== "+ msg.data +"\n")
+        console.log(msg)
+    }
+</script>
+
+</body>
+</html>

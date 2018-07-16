@@ -1,0 +1,70 @@
+---
+# SERVICE
+apiVersion: v1
+kind: Service
+metadata:
+  name: laurentia
+  namespace: staging
+  labels:
+    run: laurentia
+spec:
+  type: ClusterIP
+  ports:
+  - port: 8081
+  selector:
+    run: laurentia
+---
+# SERVICE
+apiVersion: v1
+kind: Service
+metadata:
+  name: laurentia-ui
+  namespace: staging
+  labels:
+    run: laurentia-ui
+spec:
+  type: ClusterIP
+  ports:
+  - port: 8000
+  selector:
+    run: laurentia
+---
+apiVersion: apps/v1 # for versions before 1.8.0 use apps/v1beta1
+kind: Deployment
+metadata:
+  name: laurentia
+  namespace: staging
+  labels:
+    run: laurentia
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: laurentia
+  template:
+    metadata:
+      labels:
+        run: laurentia
+    spec:
+      containers:
+      - name: laurentia
+        image:  spazzy757/test-go-redis
+        imagePullPolicy: Always
+        env:
+          - name: REDIS_HOST
+            value: "vumatel-rc.redis.cache.windows.net"
+          - name: REDIS_PASSWORD
+            value: "V+wsy+pssuuLVa1CTMeJW2TCU+02wYzm+l36zcMdW+o="
+      - name: mongo
+        image:  mongo
+        imagePullPolicy: Always
+      - name: mongo-express
+        image:  mongo-express
+        imagePullPolicy: Always
+        env:
+          - name: ME_CONFIG_MONGODB_SERVER
+            value: "localhost"
+          - name: ME_CONFIG_BASICAUTH_USERNAME
+            value: "vumatel"
+          - name: ME_CONFIG_BASICAUTH_PASSWORD
+            value: "vumatel123456789"
