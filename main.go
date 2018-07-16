@@ -1,7 +1,7 @@
 package main
 
 import (
-	"./handlers"
+	"github.com/Spazzy757/laurentia/handlers"
 )
 //var clientList = make(map[ClientConn]int)
 //var clientListRWMutex sync.RWMutex

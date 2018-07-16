@@ -4,7 +4,7 @@ import (
 	"testing"
 	"net/http"
 	"net/http/httptest"
-	"../messages"
+	"github.com/Spazzy757/laurentia/messages"
 )
 
 func TestGetMessagesHandler(t *testing.T) {

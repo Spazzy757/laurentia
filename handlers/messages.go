@@ -3,7 +3,7 @@ package handlers
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"../messages"
+	"github.com/Spazzy757/laurentia/messages"
 	"fmt"
 )
 
