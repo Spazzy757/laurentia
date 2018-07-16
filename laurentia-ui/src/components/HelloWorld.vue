@@ -15,7 +15,7 @@ export default {
   name: 'HelloWorld',
   created: function () {
     var self = this
-    this.ws = new WebSocket('wss://pangea-staging.vumatel.co.za/laurentia/ws?apikey=gj61ilg0dd9qPRd9HmzxXEuQGfV376iC')
+    this.ws = new WebSocket('wss://pangea-staging.vumatel.co.za/laurentia/ws?apikey=')
     this.ws.addEventListener('message', function (e) {
       var msg = JSON.parse(e.data)
       self.msg = msg
