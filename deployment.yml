@@ -52,9 +52,9 @@ spec:
         imagePullPolicy: Always
         env:
           - name: REDIS_HOST
-            value: "vumatel-rc.redis.cache.windows.net"
+            value: ""
           - name: REDIS_PASSWORD
-            value: "V+wsy+pssuuLVa1CTMeJW2TCU+02wYzm+l36zcMdW+o="
+            value: ""
       - name: mongo
         image:  mongo
         imagePullPolicy: Always
@@ -63,8 +63,8 @@ spec:
         imagePullPolicy: Always
         env:
           - name: ME_CONFIG_MONGODB_SERVER
-            value: "localhost"
+            value: ""
           - name: ME_CONFIG_BASICAUTH_USERNAME
-            value: "vumatel"
+            value: ""
           - name: ME_CONFIG_BASICAUTH_PASSWORD
-            value: "vumatel123456789"
+            value: ""
