@@ -8,6 +8,8 @@ services:
       - .:/go/src/app
     environment:
       MONGO_HOST: mongo
+      REDIS_HOST: redis
+      REDIS_CHANNEL: default
     depends_on:
       - redis
       - mongo

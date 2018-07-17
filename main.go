@@ -39,25 +39,7 @@ func main() {
 	handlers.GetMainEngine().Run("0.0.0.0:8000")
 }
 
-//func PubSubListener(channel string, pubSubChannel chan string) {
-//	redisHost := os.Getenv("REDIS_HOST") + ":6379"
-//	redisPassword := os.Getenv("REDIS_PASSWORD")
-//	client := redis.NewClient(&redis.Options{
-//		Addr:     redisHost,
-//		Password: redisPassword,
-//		DB:       1,
-//	})
-//	pubSub := client.Subscribe(channel)
-//	defer pubSub.Close()
-//	for {
-//		msg, err := pubSub.ReceiveMessage()
-//		if err != nil {
-//			log.Println("Pub Sub Failed to Receive Message")
-//		}
-//		pubSubChannel <- msg.Payload
-//		time.Sleep(1)
-//	}
-//}
+
 //
 //func MongoStore(dataChannel chan string) {
 //	session, err := mgo.Dial("localhost")
