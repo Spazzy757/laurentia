@@ -20,7 +20,9 @@ func TestGetMessagesHandler(t *testing.T) {
 	}
 }
 
-//func TestGetSubScriberList(t *testing.T) {
-//	client := messages.getClient()
-//	lookUp := "pubsub.events.{event}.subscribers"
-//}
+func TestGetSubScriberList(t *testing.T) {
+	client := messages.GetClient()
+	lookUp := "pubsub.events.{event}.subscribers"
+	client.SAdd(lookUp, "Hello")
+	client.SAdd(lookUp, "World")
+}

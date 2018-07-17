@@ -38,7 +38,7 @@ func TestPubSub(t *testing.T) {
 		}
 	})
 	t.Run("Get SMEMBERS List", func(t *testing.T) {
-		client := getClient()
+		client := GetClient()
 		lookUp := "pubsub.events.{event}.subscribers"
 		client.SAdd(lookUp, "Hello")
 		client.SAdd(lookUp, "World")

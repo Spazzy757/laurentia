@@ -14,7 +14,7 @@ var redisPassword = os.Getenv("REDIS_PASSWORD")
 var channel = os.Getenv("REDIS_CHANNEL")
 
 
-func getClient() *redis.Client{
+func GetClient() *redis.Client{
 	client := redis.NewClient(&redis.Options{
 		Addr:     redisHost,
 		Password: redisPassword,
@@ -25,7 +25,7 @@ func getClient() *redis.Client{
 
 
 func PubSubListener(pubSubChannel chan string) {
-	client := getClient()
+	client := GetClient()
 	pubSub := client.Subscribe(channel)
 	defer pubSub.Close()
 	for {
@@ -39,7 +39,7 @@ func PubSubListener(pubSubChannel chan string) {
 
 
 func PubSubSendMessage(message string) error{
-	client := getClient()
+	client := GetClient()
 	err := client.Publish(channel, message).Err()
 	if err != nil {return err}
 	return nil
@@ -47,7 +47,7 @@ func PubSubSendMessage(message string) error{
 
 
 func GetSMembers(descriptor string) []string{
-	client := getClient()
+	client := GetClient()
 	sMem := client.SMembers(descriptor)
 	return sMem.Val()
 }
