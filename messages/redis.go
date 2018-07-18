@@ -65,7 +65,7 @@ func PubSubSendMessage(message string) error{
 func CheckAcknowledgment(message string) (Acknowledgement, error){
 	message = strings.Replace(message, `'`, `"`, -1)
 	var m DynamicMessage
-	if err := json.Unmarshal([]byte(message), &m); err != nil {
+	if err := json.Unmarshal([]byte(formatPythonDict(message)), &m); err != nil {
 		return Acknowledgement{}, err
 	}
 	subscriberLookUp := "pubsub.events.order." + m.Key + ".subscribers"
@@ -159,3 +159,10 @@ func notifySlack(failureAck Acknowledgement) {
 	defer resp.Body.Close()
 }
 
+func formatPythonDict(message string) string {
+	message = strings.Replace(message, `None`, `null`, -1)
+	message = strings.Replace(message, `True`, `true`, -1)
+	message = strings.Replace(message, `False`, `false`, -1)
+	message = strings.Replace(message, `'`, `"`, -1)
+	return message
+}
