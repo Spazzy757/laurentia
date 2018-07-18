@@ -6,6 +6,6 @@ echo    # (optional) move to a new line
 
 if [[ $REPLY =~ ^[Yy]$ ]]
 then
-  docker build -t spazzy757/test-go-redis:${1:-$branch} .
-  docker push spazzy757/test-go-redis:${1:-$branch}
+  docker build -t spazzy757/laurentia:${1:-$branch} .
+  docker push spazzy757/laurentia:${1:-$branch}
 fi

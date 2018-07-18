@@ -10,21 +10,6 @@ metadata:
 spec:
   type: ClusterIP
   ports:
-  - port: 8081
-  selector:
-    run: laurentia
----
-# SERVICE
-apiVersion: v1
-kind: Service
-metadata:
-  name: laurentia-ui
-  namespace: staging
-  labels:
-    run: laurentia-ui
-spec:
-  type: ClusterIP
-  ports:
   - port: 8000
   selector:
     run: laurentia
@@ -48,23 +33,23 @@ spec:
     spec:
       containers:
       - name: laurentia
-        image:  spazzy757/test-go-redis
+        image:  spazzy757/laurentia:v0.1.1
         imagePullPolicy: Always
+        ports:
+          - containerPort: 8000
         env:
           - name: REDIS_HOST
-            value: ""
+            value: "vumatel-rc.redis.cache.windows.net"
           - name: REDIS_PASSWORD
-            value: ""
+            value: "V+wsy+pssuuLVa1CTMeJW2TCU+02wYzm+l36zcMdW+o="
+          - name: MONGO_HOST
+            value: "localhost"
+          - name: REDIS_CHANNEL
+            value: "default"
+          - name: USER
+            value: "Spazzy757"
+          - name: USER_PASSWORD
+            value: "Spazzy757"
       - name: mongo
         image:  mongo
         imagePullPolicy: Always
-      - name: mongo-express
-        image:  mongo-express
-        imagePullPolicy: Always
-        env:
-          - name: ME_CONFIG_MONGODB_SERVER
-            value: ""
-          - name: ME_CONFIG_BASICAUTH_USERNAME
-            value: ""
-          - name: ME_CONFIG_BASICAUTH_PASSWORD
-            value: ""

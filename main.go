@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/Spazzy757/laurentia/handlers"
+	"github.com/gin-gonic/gin"
 )
 //var clientList = make(map[ClientConn]int)
 //var clientListRWMutex sync.RWMutex
@@ -31,12 +32,24 @@ import (
 //}
 
 
-
+func SetupRouter() *gin.Engine {
+	r := gin.Default()
+	//r.GET("/ws", func(c *gin.Context) {
+	//	WSHandler(c.Writer, c.Request, dataChannel, mongoChannel)
+	//})
+	v1 := r.Group("v1")
+	{
+		v1.GET("/subscribers", handlers.GetSubScriberList)
+		v1.GET("/messages", handlers.GetMessagesHandler)
+	}
+	return r
+}
 
 func main() {
 	//go PubSubListener("default", dataChannel)
 	//go MongoStore(mongoChannel)
-	handlers.GetMainEngine().Run("0.0.0.0:8000")
+	r := SetupRouter()
+	r.Run("0.0.0.0:8000")
 }
 
 
