@@ -45,14 +45,19 @@ func TestPubSub(t *testing.T) {
 		subscriberList := GetSMembers(lookUp)
 		if len(subscriberList) != 2 {t.Fail()}
 	})
-	//t.Run("Check Acknowledgment", func(t *testing.T) {
-	//	client := GetClient()
-	//	messageID := "12345"
-	//	event := "clean.up"
-	//	subscriber := "order.service"
-	//	subscriberLookUp := "pubsub.events.order." + event + ".subscribers"
-	//	client.SAdd(subscriberLookUp, subscriber)
-	//	client.SAdd(lookUp, "World")
-	//})
+	t.Run("Check Acknowledgment", func(t *testing.T) {
+		client := GetClient()
+		message := `{'key': 'testing.ack', 'id': '1234567890', 'payload': {'service': 'appointments'}}`
+		messageID := "1234567890"
+		event := "testing.ack"
+		subscriber := "order.service"
+		subscriberTwo := "order.fulfilment"
+		subscriberLookUp := "pubsub.events.order." + event + ".subscribers"
+		ackLookUp := "pubsub.events.actions." + event + "." + messageID + ".received"
+		client.SAdd(subscriberLookUp, subscriber)
+		client.SAdd(subscriberLookUp, subscriberTwo)
+		client.SAdd(ackLookUp, subscriber)
+		VerifyMessageAndNotify(message)
+	})
 
 }

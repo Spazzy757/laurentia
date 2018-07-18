@@ -38,6 +38,7 @@ func main() {
 		for {
 			msg := <-messageChan
 			messages.SaveMessage(msg)
+			messages.VerifyMessageAndNotify(msg)
 		}
 	}()
 	r := handlers.SetupRouter()
