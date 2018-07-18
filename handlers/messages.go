@@ -5,7 +5,8 @@ import (
 	"net/http"
 	"github.com/Spazzy757/laurentia/messages"
 	"strconv"
-	"fmt"
+	"strings"
+	"log"
 )
 
 func GetMessagesHandler(c *gin.Context) {
@@ -16,8 +17,7 @@ func GetMessagesHandler(c *gin.Context) {
 	messageList, _ := messages.GetMessageList(limit, page)
 	messageJson := make([]string, 0)
 	for i := 0; i < len(messageList); i++ {
-		fmt.Printf("%T", messageList[i].Message)
-		messageJson = append(messageJson, messageList[i].Message)
+		messageJson = append(messageJson,  fomatMessage(messageList[i].Message))
 	}
 	c.JSON(http.StatusOK, gin.H{
 		"messages": messageJson,
@@ -37,10 +37,19 @@ func GetAcknowledgedSubscribers(c *gin.Context)  {
 	event := c.Request.URL.Query().Get("event")
 	messageID := c.Query("messageID")
 	lookUp := "pubsub.events.actions." + event + "." + messageID + ".received"
+	log.Println("********************************")
+	log.Println(lookUp)
+	log.Println("********************************")
 	acknowledgedList := messages.GetSMembers(lookUp)
 	c.JSON(http.StatusOK, gin.H{
 		"event": event,
 		"eventID": messageID,
 		"acknowledged": acknowledgedList,
 	})
+}
+
+func fomatMessage(message string) string{
+	strings.Replace(message, "\"", "", -1)
+	strings.Replace(message, "'", "\"", -1)
+	return message
 }

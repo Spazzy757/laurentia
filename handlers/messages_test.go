@@ -8,14 +8,13 @@ import (
 )
 
 func TestGetMessagesHandler(t *testing.T) {
-	messages.SaveMessage(`{'foo'': 'bar'}`)
-	messages.SaveMessage(`{'foo'': 'baz'}`)
+	messages.SaveMessage(`{'foo': 'bar'}`)
+	messages.SaveMessage(`{'foo': 'baz'}`)
 	r := SetupRouter()
 	url := `/v1/messages?limit=2`
 	resp := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", url, nil)
 	r.ServeHTTP(resp, req)
-	t.Log(resp.Body)
 	if resp.Code != 200 {
 		t.Fatal("Response was not 200")
 	}
@@ -31,7 +30,6 @@ func TestGetSubScriberList(t *testing.T) {
 	resp := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", url, nil)
 	r.ServeHTTP(resp, req)
-	t.Log(resp.Body)
 	if resp.Code != 200 {
 		t.Fatal("Response was not 200")
 	}
@@ -46,7 +44,6 @@ func TestGetAcknowledgedSubscribers(t *testing.T) {
 	resp := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", url, nil)
 	r.ServeHTTP(resp, req)
-	t.Log(resp.Body)
 	if resp.Code != 200 {
 		t.Fatal("Response was not 200")
 	}
