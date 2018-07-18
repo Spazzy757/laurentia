@@ -33,23 +33,10 @@ spec:
     spec:
       containers:
       - name: laurentia
-        image:  spazzy757/laurentia:v0.1.5
+        image:  spazzy757/laurentia:v0.1.6
         imagePullPolicy: Always
         ports:
           - containerPort: 8000
-        env:
-          - name: REDIS_HOST
-            value: "vumatel-rc.redis.cache.windows.net"
-          - name: REDIS_PASSWORD
-            value: "V+wsy+pssuuLVa1CTMeJW2TCU+02wYzm+l36zcMdW+o="
-          - name: MONGO_HOST
-            value: "localhost"
-          - name: REDIS_CHANNEL
-            value: "default"
-          - name: USER
-            value: "Spazzy757"
-          - name: USER_PASSWORD
-            value: "Spazzy757"
       - name: mongo
         image:  mongo
         imagePullPolicy: Always
