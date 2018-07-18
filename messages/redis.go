@@ -6,6 +6,8 @@ import (
 	"github.com/go-redis/redis"
 	"fmt"
 	"log"
+	"strings"
+	"encoding/json"
 )
 
 
@@ -13,6 +15,12 @@ var redisHost = os.Getenv("REDIS_HOST") + ":6379"
 var redisPassword = os.Getenv("REDIS_PASSWORD")
 var channel = os.Getenv("REDIS_CHANNEL")
 
+
+type DynamicMessage struct {
+	Key string `json:"key"`
+	ID  string `json:"id"`
+	Payload  interface{} `json:"payload"`
+}
 
 func GetClient() *redis.Client{
 	client := redis.NewClient(&redis.Options{
@@ -42,6 +50,16 @@ func PubSubSendMessage(message string) error{
 	client := GetClient()
 	err := client.Publish(channel, message).Err()
 	if err != nil {return err}
+	return nil
+}
+
+func CheckAcknowledgment(message string) error{
+	client := GetClient()
+	message = strings.Replace(message, `'`, `"`, -1)
+	var m DynamicMessage
+	if err := json.Unmarshal([]byte(message), &m); err != nil {
+		log.Fatal(err)
+	}
 	return nil
 }
 

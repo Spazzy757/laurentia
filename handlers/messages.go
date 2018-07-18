@@ -15,7 +15,7 @@ type JSONString string
 type DynamicMessage struct {
 	Key string `json:"key"`
 	ID  string `json:"id"`
-	Payload  interface{} `json:"payload"`
+	Payload interface{} `json:"payload"`
 }
 
 func GetMessagesHandler(c *gin.Context) {
@@ -26,7 +26,7 @@ func GetMessagesHandler(c *gin.Context) {
 	messageList, _ := messages.GetMessageList(limit, page)
 	var messageJson []DynamicMessage
 	for i := 0; i < len(messageList); i++ {
-		message := strings.Replace(messageList[i].Message, `'`, `"`, -1)
+		message := formatPythonDict(messageList[i].Message)
 		var m DynamicMessage
 		if err := json.Unmarshal([]byte(message), &m); err != nil {
 			log.Fatal(err)
@@ -59,3 +59,10 @@ func GetAcknowledgedSubscribers(c *gin.Context)  {
 	})
 }
 
+func formatPythonDict(message string) string {
+	message = strings.Replace(message, `None`, `null`, -1)
+	message = strings.Replace(message, `True`, `true`, -1)
+	message = strings.Replace(message, `False`, `false`, -1)
+	message = strings.Replace(message, `'`, `"`, -1)
+	return message
+}
