@@ -12,8 +12,9 @@ func SetupRouter() *gin.Engine {
 	//})
 	v1 := r.Group("v1")
 	{
-		v1.GET("/subscribers", GetSubScriberList)
+		v1.GET("/subscribers", GetSubscriberList)
 		v1.GET("/messages", GetMessagesHandler)
+		v1.GET("/acknowledged", GetAcknowledgedSubscribers)
 	}
 	return r
 }
