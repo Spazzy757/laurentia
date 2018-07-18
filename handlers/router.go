@@ -10,6 +10,7 @@ func SetupRouter() *gin.Engine {
 	//r.GET("/ws", func(c *gin.Context) {
 	//	WSHandler(c.Writer, c.Request, dataChannel, mongoChannel)
 	//})
+	r.GET("/health", GetHealth)
 	v1 := r.Group("v1")
 	{
 		v1.GET("/subscribers", GetSubscriberList)

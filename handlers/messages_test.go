@@ -15,7 +15,6 @@ func TestGetMessagesHandler(t *testing.T) {
 	resp := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", url, nil)
 	r.ServeHTTP(resp, req)
-	t.Log(resp.Body)
 	if resp.Code != 200 {
 		t.Fatal("Response was not 200")
 	}
@@ -42,6 +41,17 @@ func TestGetAcknowledgedSubscribers(t *testing.T) {
 	client.SAdd(lookUp, "subscriber-1.received")
 	r := SetupRouter()
 	url := `/v1/acknowledged?event=order&messageID=12345`
+	resp := httptest.NewRecorder()
+	req, _ := http.NewRequest("GET", url, nil)
+	r.ServeHTTP(resp, req)
+	if resp.Code != 200 {
+		t.Fatal("Response was not 200")
+	}
+}
+
+func TestGetHealth(t *testing.T) {
+	r := SetupRouter()
+	url := `/health`
 	resp := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", url, nil)
 	r.ServeHTTP(resp, req)
