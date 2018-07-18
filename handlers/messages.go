@@ -6,7 +6,6 @@ import (
 	"github.com/Spazzy757/laurentia/messages"
 	"strconv"
 	"fmt"
-	"log"
 )
 
 func GetMessagesHandler(c *gin.Context) {
@@ -27,11 +26,8 @@ func GetMessagesHandler(c *gin.Context) {
 
 func GetSubScriberList(c *gin.Context) {
 	event := c.Request.URL.Query().Get("event")
-	log.Println(event)
 	lookUp := "pubsub.events." + event + ".subscribers"
-	log.Println(lookUp)
 	subscriberList := messages.GetSMembers(lookUp)
-	log.Println(subscriberList)
 	c.JSON(http.StatusOK, gin.H{
 		"subscribers": subscriberList,
 	})

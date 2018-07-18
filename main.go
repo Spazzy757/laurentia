@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/Spazzy757/laurentia/handlers"
 	"github.com/Spazzy757/laurentia/messages"
+	"log"
 )
 //var clientList = make(map[ClientConn]int)
 //var clientListRWMutex sync.RWMutex
@@ -37,6 +38,7 @@ func main() {
 	go func() {
 		for {
 			msg := <-messageChan
+			log.Println(msg)
 			messages.SaveMessage(msg)
 		}
 	}()
