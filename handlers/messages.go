@@ -7,7 +7,16 @@ import (
 	"strconv"
 	"strings"
 	"log"
+	"encoding/json"
 )
+
+type JSONString string
+
+type DynamicMessage struct {
+	Key string `json:"key"`
+	ID  string `json:"id"`
+	Payload  interface{} `json:"payload"`
+}
 
 func GetMessagesHandler(c *gin.Context) {
 	limit, err := strconv.Atoi(c.Request.URL.Query().Get("limit"))
@@ -15,9 +24,14 @@ func GetMessagesHandler(c *gin.Context) {
 	page, err := strconv.Atoi(c.Request.URL.Query().Get("page"))
 	if err != nil {page = 0}
 	messageList, _ := messages.GetMessageList(limit, page)
-	messageJson := make([]string, 0)
+	var messageJson []DynamicMessage
 	for i := 0; i < len(messageList); i++ {
-		messageJson = append(messageJson,  fomatMessage(messageList[i].Message))
+		message := strings.Replace(messageList[i].Message, `'`, `"`, -1)
+		var m DynamicMessage
+		if err := json.Unmarshal([]byte(message), &m); err != nil {
+			log.Fatal(err)
+		}
+		messageJson = append(messageJson, m)
 	}
 	c.JSON(http.StatusOK, gin.H{
 		"messages": messageJson,
@@ -37,9 +51,6 @@ func GetAcknowledgedSubscribers(c *gin.Context)  {
 	event := c.Request.URL.Query().Get("event")
 	messageID := c.Query("messageID")
 	lookUp := "pubsub.events.actions." + event + "." + messageID + ".received"
-	log.Println("********************************")
-	log.Println(lookUp)
-	log.Println("********************************")
 	acknowledgedList := messages.GetSMembers(lookUp)
 	c.JSON(http.StatusOK, gin.H{
 		"event": event,
@@ -48,8 +59,3 @@ func GetAcknowledgedSubscribers(c *gin.Context)  {
 	})
 }
 
-func fomatMessage(message string) string{
-	strings.Replace(message, "\"", "", -1)
-	strings.Replace(message, "'", "\"", -1)
-	return message
-}

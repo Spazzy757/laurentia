@@ -8,13 +8,14 @@ import (
 )
 
 func TestGetMessagesHandler(t *testing.T) {
-	messages.SaveMessage(`{'foo': 'bar'}`)
-	messages.SaveMessage(`{'foo': 'baz'}`)
+	messages.SaveMessage(`{'key': 'health.check', 'id': '0396660a-e111-4cbb-9abc-f9db68574480', 'payload': {'service': 'appointments'}}`)
+	messages.SaveMessage(`{'key': 'health.check', 'id': '0396870a-e111-4cbb-9abc-f9db68574480', 'payload': {'service': 'appointments'}}`)
 	r := SetupRouter()
 	url := `/v1/messages?limit=2`
 	resp := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", url, nil)
 	r.ServeHTTP(resp, req)
+	t.Log(resp.Body)
 	if resp.Code != 200 {
 		t.Fatal("Response was not 200")
 	}
