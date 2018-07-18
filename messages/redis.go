@@ -6,8 +6,6 @@ import (
 	"github.com/go-redis/redis"
 	"fmt"
 	"log"
-	"strings"
-	"encoding/json"
 )
 
 
@@ -53,15 +51,15 @@ func PubSubSendMessage(message string) error{
 	return nil
 }
 
-func CheckAcknowledgment(message string) error{
-	client := GetClient()
-	message = strings.Replace(message, `'`, `"`, -1)
-	var m DynamicMessage
-	if err := json.Unmarshal([]byte(message), &m); err != nil {
-		log.Fatal(err)
-	}
-	return nil
-}
+//func CheckAcknowledgment(message string) error{
+//	client := GetClient()
+//	message = strings.Replace(message, `'`, `"`, -1)
+//	var m DynamicMessage
+//	if err := json.Unmarshal([]byte(message), &m); err != nil {
+//		log.Fatal(err)
+//	}
+//	return nil
+//}
 
 
 func GetSMembers(descriptor string) []string{
