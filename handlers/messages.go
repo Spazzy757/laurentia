@@ -13,7 +13,7 @@ import (
 type JSONString string
 
 type DynamicMessage struct {
-	Key string `json:"key"`
+	Key string
 	ID  string `json:"id"`
 	Payload interface{} `json:"payload"`
 }

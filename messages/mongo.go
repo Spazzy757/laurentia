@@ -5,47 +5,70 @@ import (
 	"time"
 	"gopkg.in/mgo.v2/bson"
 	"os"
+	"encoding/json"
+	"log"
+	//"errors"
+	"errors"
 )
 
 type Message struct {
-	ID bson.ObjectId `bson:"_id,omitempty"`
+	MongoID bson.ObjectId `bson:"_id,omitempty" `
+	Key string `bson:"key"`
+	ID string `bson:"id"`
 	Timestamp time.Time `bson:"timestamp"`
-	Message string `bson:"result"`
+	Payload  interface{} `json:"payload"`
 }
 
 var host  = os.Getenv("MONGO_HOST")
 const DB = "laurentia"
 const COLLECTION = "messages"
 
+func getCollection () *mgo.Collection {
+	s, err := mgo.Dial(host)
+	c := s.DB(DB).C(COLLECTION)
+	if err != nil { log.Fatal(`Error Connecting to Mongo DB`)}
+	return c
+}
 
-func SaveMessage(message string) (bool, error){
-	m := &Message{Timestamp: time.Now(), Message: message}
-	session, err := mgo.Dial(host)
-	if err != nil { return false, err}
-	c := session.DB(DB).C(COLLECTION)
-	err = c.Insert(&m)
-	if err != nil {
+func SaveMessage (message string) (bool, error){
+	var m *Message
+	if err := json.Unmarshal([]byte(formatPythonDict(message)), &m); err != nil {
 		return false, err
+	}
+	if m.ID == "" {
+		return false, errors.New(`invalid input`)
+	}
+	resp, _ := GetMessageByID(m.ID)
+	if (Message{}) == resp {
+		c := getCollection()
+		err := c.Insert(&m)
+		if err != nil {return false, err}
 	}
 	return true, nil
 }
 
 func GetMessageList (limit int, page int) ([]Message, error) {
 	var results []Message
-	session, err := mgo.Dial(host)
-	c := session.DB(DB).C(COLLECTION)
-	err = c.Find(bson.M{}).Skip(limit * page).Sort("-timestamp").Limit(limit).All(&results)
-	if err != nil {
-		return nil, err
-	}
+	c := getCollection()
+	err := c.Find(bson.M{}).Skip(limit * page).Sort("-timestamp").Limit(limit).All(&results)
+	if err != nil {return nil, err}
 	return results, nil
 }
 
-func DeleteMessage (objectID bson.ObjectId) (error) {
-	session, err := mgo.Dial(host)
-	if err != nil {return err}
-	c := session.DB(DB).C(COLLECTION)
-	err = c.RemoveId(objectID)
-	if err != nil {return err}
+func GetMessageByID (id string) (Message, error) {
+	var results Message
+	c := getCollection()
+	err := c.Find(bson.M{"id": id}).One(&results)
+	if err != nil {return Message{}, err}
+	return results, nil
+}
+
+func DeleteMessage (id string) error{
+	if id != "" {
+		c := getCollection()
+		err := c.Remove(bson.M{"id": id})
+		if err != nil {return err}
+		return nil
+	}
 	return nil
 }

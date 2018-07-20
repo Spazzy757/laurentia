@@ -4,10 +4,10 @@ import (
 	"os"
 	"time"
 	"github.com/go-redis/redis"
-	"fmt"
 	"log"
 	"strings"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"bytes"
 )
@@ -62,7 +62,6 @@ func PubSubSendMessage(message string) error{
 }
 
 func CheckAcknowledgment(message string) (Acknowledgement, error){
-	message = strings.Replace(message, `'`, `"`, -1)
 	var m DynamicMessage
 	if err := json.Unmarshal([]byte(formatPythonDict(message)), &m); err != nil {
 		return Acknowledgement{}, err
@@ -101,61 +100,62 @@ func checkStringInSlice(s string, sList []string) bool{
 func VerifyMessageAndNotify(message string) {
 	ack, err := CheckAcknowledgment(message)
 	if err != nil {
-		log.Println("Error acknowleging event")
+		log.Println("Failed Acknowledging Message")
+		log.Println(err)
 		return
 	}
-	if len(ack.Failure) > 0 {
-		notifySlack(ack)
-	}
+	if len(ack.Failure) > 0 {notifySlack(ack)}
 }
 
 func notifySlack(failureAck Acknowledgement) {
 	url := os.Getenv("SLACK_WEBHOOK")
-	messageString := fmt.Sprintf(`{
+	log.Println(url)
+	if url != "" {
+		messageString := fmt.Sprintf(`{
  		"channel": "#laurentia",
 		"username": "Laurentia-Bot",
-		"icon_emoji": ":ghost:",	
-"attachments": [
-		{
-		"fallback": "There may be an error with you subscriber",
-		"color": "#ff0000",
-		"title": "PubSub Failure Has Been Detected",
-		"fields": [
-		{
-			"title": "Event",
-			"value": ">%v" ,
-			"short": true
-		},
-		{
-			"title": "ID:",
-			"value": "> %v" ,
-			"short": true
-		},
-		{
-			"title": "Failures:",
-			"value": "> %v" ,
-			"short": false
-		},
-		{
-			"title": "Successful:",
-			"value": "> %v" ,
-			"short": false
-		}
-		],
+		"icon_emoji": ":ghost:",
 		"footer": "laurentia",
-		}
-	]
+		"attachments": [{
+			"fallback": "There may be an error with you subscriber",
+			"color": "#ff0000",
+			"title": "PubSub Failure Has Been Detected",
+			"fields": [
+				{
+					"title": "Event",
+					"value": ">%v" ,
+					"short": true
+				},
+				{
+					"title": "ID:",
+					"value": "> %v" ,
+					"short": true
+				},
+				{
+					"title": "Failures:",
+					"value": "> %v" ,
+					"short": false
+				},
+				{
+					"title": "Successful:",
+					"value": "> %v" ,
+					"short": false
+				}
+			],
+		}]
 	}`, failureAck.Event, failureAck.ID, failureAck.Failure, failureAck.Successful)
-	var jsonStr = []byte(messageString)
-	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonStr))
-	req.Header.Set("Content-Type", "application/json")
+		var jsonStr = []byte(messageString)
+		req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonStr))
+		req.Header.Set("Content-Type", "application/json")
 
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	if err != nil {
-		panic(err)
+		client := &http.Client{}
+		resp, err := client.Do(req)
+		if err != nil {
+			panic(err)
+		}
+		defer resp.Body.Close()
 	}
-	defer resp.Body.Close()
+
 }
 
 func formatPythonDict(message string) string {

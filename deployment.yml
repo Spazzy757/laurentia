@@ -33,10 +33,27 @@ spec:
     spec:
       containers:
       - name: laurentia
-        image:  spazzy757/laurentia:v0.1.8
+        image:  spazzy757/laurentia:v1.0.0
         imagePullPolicy: Always
         ports:
           - containerPort: 8000
+        env:
+          - name: REDIS_HOST
+            value: "vumatel-rc.redis.cache.windows.net"
+          - name: REDIS_PASSWORD
+            value: "V+wsy+pssuuLVa1CTMeJW2TCU+02wYzm+l36zcMdW+o="
+          - name: MONGO_HOST
+            value: "localhost"
+          - name: REDIS_CHANNEL
+            value: "default"
+          - name: USER
+            value: "Spazzy757"
+          - name: USER_PASSWORD
+            value: "Spazzy757"
+          - name: SLACK_WEBHOOK
+            value: "https://hooks.slack.com/services/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"
+          - name: GIN_MODE
+            value: release
       - name: mongo
         image:  mongo
         imagePullPolicy: Always
