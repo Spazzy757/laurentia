@@ -23,7 +23,7 @@ func removeAllMessages() {
 }
 
 func TestGetMessagesHandler(t *testing.T) {
-	t.Run(`Test Geting Messages With A Limit of Two`, func (t *testing.T) {
+	t.Run(`Test Getting Messages With A Limit of Two`, func (t *testing.T) {
 		messages.SaveMessage(MESSAGE)
 		messages.SaveMessage(SECONDMESSAGE)
 		r := SetupRouter()

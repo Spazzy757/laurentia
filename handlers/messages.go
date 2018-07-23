@@ -5,13 +5,14 @@ import (
 	"net/http"
 	"github.com/Spazzy757/laurentia/messages"
 	"strconv"
-	"log"
+	"time"
 )
 
 type JSONString string
 
 type DynamicMessage struct {
-	Key string
+	Key string `json:"key"`
+	Timestamp time.Time `json:"timestamp"`
 	ID  string `json:"id"`
 	Payload interface{} `json:"payload"`
 }
@@ -29,11 +30,12 @@ func GetMessagesHandler(c *gin.Context) {
 	var messageJson []DynamicMessage
 	for i := 0; i < len(messageList); i++ {
 		message := messageList[i]
-		log.Printf("%T", message)
-		m := DynamicMessage{message.Key, message.ID, message.Payload}
+		m := DynamicMessage{message.Key, message.Timestamp,
+		message.ID, message.Payload}
 		messageJson = append(messageJson, m)
 	}
 	c.JSON(http.StatusOK, gin.H{
+		"count": len(messageJson),
 		"messages": messageJson,
 	})
 }

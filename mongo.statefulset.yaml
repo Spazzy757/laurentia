@@ -10,7 +10,7 @@
 ---
 # Storage Class (AKS)
 kind: StorageClass
-apiVersion: storage.k8s.io/v1
+apiVersion: storage.k8s.io/v1beta1
 metadata:
   name: fast
   namespace: staging
@@ -22,6 +22,20 @@ mountOptions:
   - gid=1000
 parameters:
   skuName: Standard_LRS
+  storageAccount: mongo
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: azurefile
+  namespace: staging
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: fast
+  resources:
+    requests:
+      storage: 5Gi
 ---
 # Service
 apiVersion: v1
@@ -52,36 +66,28 @@ spec:
     metadata:
       labels:
         role: mongo
-        environment: staging
+        environment: test
     spec:
       terminationGracePeriodSeconds: 10
       containers:
         - name: mongo
-          image: mongo
+          image: mongo:3.4
           command:
-            - mongod
+            - "mongod"
+            - "--dbpath=/data/mongo"
             - "--replSet"
-            - rs0
+            - "rs0"
+            - "--bind_ip"
+            - "0.0.0.0"
             - "--smallfiles"
             - "--noprealloc"
           ports:
             - containerPort: 27017
           volumeMounts:
-            - name: mongo-persistent-storage
-              mountPath: /data/db
-        - name: mongo-sidecar
-          image: cvallance/mongo-k8s-sidecar
-          env:
-            - name: MONGO_SIDECAR_POD_LABELS
-              value: "role=mongo,environment=staging"
-  volumeClaimTemplates:
-    - metadata:
-        name: mongo-persistent-storage
-        annotations:
-          volume.beta.kubernetes.io/storage-class: "fast"
-      spec:
-        accessModes: ["ReadWriteOnce"]
-        resources:
-          requests:
-            storage: 100Gi
+            - name: persistdisk
+              mountPath: /data/mongo
+      volumes:
+        - name: persistdisk
+          persistentVolumeClaim:
+            claimName: azurefile
 ---
