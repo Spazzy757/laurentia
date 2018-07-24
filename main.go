@@ -13,6 +13,7 @@ func main() {
 			msg := <-messageChan
 			messages.SaveMessage(msg)
 			messages.VerifyMessageAndNotify(msg)
+			handlers.AddMessageToChannel(msg)
 		}
 	}()
 	r := handlers.SetupRouter()
