@@ -4,6 +4,7 @@ import (
 	`github.com/gin-gonic/gin`
 	"github.com/appleboy/gin-jwt"
 	"time"
+	"os"
 )
 
 
@@ -56,17 +57,19 @@ type User struct {
 
 
 func ConfigureAuthMiddleware() *jwt.GinJWTMiddleware{
+	superUserName := os.Getenv(`USERNAME`)
+	superUserPassword := os.Getenv(`PASSWORD`)
 	return &jwt.GinJWTMiddleware{
 		Realm:      "test zone",
 		Key:        []byte("secret key"),
 		Timeout:    time.Hour,
 		MaxRefresh: time.Hour,
 		Authenticator: func(userId string, password string, c *gin.Context) (interface{}, bool) {
-			if (userId == "admin" && password == "admin") || (userId == "test" && password == "test") {
+			if userId == superUserName && password == superUserPassword {
 				return &User{
 					UserName:  userId,
-					LastName:  "Bo-Yi",
-					FirstName: "Wu",
+					LastName:  "admin",
+					FirstName: "admin",
 				}, true
 			}
 

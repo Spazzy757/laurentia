@@ -10,8 +10,8 @@ services:
       MONGO_HOST: mongo
       REDIS_HOST: redis
       REDIS_CHANNEL: default
-      USER: test123
-      USER_PASSWORD: test123
+      USERNAME: admin
+      PASSWORD: admin
 #      SLACK_WEBHOOK: "https://hooks.slack.com/services/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"
     depends_on:
       - redis
