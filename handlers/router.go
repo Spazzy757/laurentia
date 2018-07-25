@@ -78,13 +78,13 @@ func ConfigureAuthMiddleware() *jwt.GinJWTMiddleware{
 		},
 		Authorizator: func(user interface{}, c *gin.Context) bool {
 			log.Println(`*************************************************`)
-			log.Println(user.(string))
+			log.Println(user)
 			log.Println(user.(string) == superUserName)
 			log.Println(`*************************************************`)
 			if user.(string) == superUserName {
 				return true
 			}
-			return true
+			return false
 		},
 		Unauthorized: func(c *gin.Context, code int, message string) {
 			c.JSON(code, gin.H{
@@ -99,7 +99,7 @@ func ConfigureAuthMiddleware() *jwt.GinJWTMiddleware{
 		// - "header:<name>"
 		// - "query:<name>"
 		// - "cookie:<name>"
-		TokenLookup: "header: Authorization, query: token, cookie: jwt",
+		TokenLookup: "header: Authorization",
 		// TokenLookup: "query:token",
 		// TokenLookup: "cookie:token",
 
