@@ -12,32 +12,22 @@ import (
 	"time"
 )
 
-var clientList = make(map[ClientConn]int)
-var clientListRWMutex sync.RWMutex
-var MessageChannel = make(chan DynamicMessage)
 type ClientConn struct {
 	uuid      string
-	websocket *websocket.Conn
+	conn *websocket.Conn
 	ip        net.Addr
 }
 
-func addClient(clientConnection ClientConn) {
-	clientListRWMutex.Lock()
-	clientList[clientConnection] = 0
-	clientListRWMutex.Unlock()
-}
-func removeClient(clientConnection ClientConn) {
-	clientListRWMutex.Lock()
-	delete(clientList, clientConnection)
-	clientListRWMutex.Unlock()
-}
-
+var clientList = make(map[ClientConn]int)
+var clientListRWMutex sync.RWMutex
+var MessageChannel = make(chan DynamicMessage)
 
 var upgrader = websocket.Upgrader{
 	CheckOrigin: func(r *http.Request) bool {
 		return true
 	},
 }
+
 
 func MessageWSHandler(w http.ResponseWriter, r *http.Request) {
 	conn, err := upgrader.Upgrade(w, r, nil)
@@ -56,9 +46,10 @@ func MessageWSHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+
 func broadcastMessage(message *DynamicMessage) {
 	for client := range clientList {
-		err := client.websocket.WriteJSON(message)
+		err := client.conn.WriteJSON(message)
 		// If there is a error communicating with client remove them from list
 		if err != nil {removeClient(client)}
 	}
@@ -67,10 +58,28 @@ func broadcastMessage(message *DynamicMessage) {
 
 func AddMessageToChannel(msg string) {
 	var m *DynamicMessage
-	if err := json.Unmarshal([]byte(formatPythonDict(msg)), &m); err != nil {log.Println("Invalid Message")}
+	if err := json.Unmarshal([]byte(formatPythonDict(msg)), &m); err != nil {
+		log.Println("Invalid Message")
+		return
+	}
 	m.Timestamp = time.Now()
 	MessageChannel <- *m
 }
+
+
+func addClient(clientConnection ClientConn) {
+	clientListRWMutex.Lock()
+	clientList[clientConnection] = 0
+	clientListRWMutex.Unlock()
+}
+
+
+func removeClient(clientConnection ClientConn) {
+	clientListRWMutex.Lock()
+	delete(clientList, clientConnection)
+	clientListRWMutex.Unlock()
+}
+
 
 func formatPythonDict(message string) string {
 	message = strings.Replace(message, `None`, `null`, -1)

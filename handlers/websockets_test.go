@@ -10,8 +10,8 @@ import (
 )
 
 func TestMessageWSHandler(t *testing.T) {
-	var webSocketWaitGroup sync.WaitGroup
-	webSocketWaitGroup.Add(10)
+	var wGroup sync.WaitGroup
+	wGroup.Add(10)
 	// Create test server with the echo handler.
 	s := httptest.NewServer(http.HandlerFunc(MessageWSHandler))
 	defer s.Close()
@@ -35,11 +35,11 @@ func TestMessageWSHandler(t *testing.T) {
 			messageList = append(messageList, *m)
 			w.Done()
 		}
-	}(&webSocketWaitGroup)
+	}(&wGroup)
 	for i := 0; i < 10; i ++ {
 		AddMessageToChannel(`{"key": "1234", "id": "12334", "payload": {}}`)
 	}
-	webSocketWaitGroup.Wait()
+	wGroup.Wait()
 	if len(messageList) != 10 {
 		t.Fatal("Web Sockets only recieved did not receieve all messages")
 	}
