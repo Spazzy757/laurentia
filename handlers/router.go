@@ -5,6 +5,7 @@ import (
 	"github.com/appleboy/gin-jwt"
 	"time"
 	"os"
+	"log"
 )
 
 
@@ -77,7 +78,10 @@ func ConfigureAuthMiddleware() *jwt.GinJWTMiddleware{
 			return nil, false
 		},
 		Authorizator: func(user interface{}, c *gin.Context) bool {
-			if v, ok := user.(string); ok && v == "admin" {
+			log.Println(`*************************************************`)
+			log.Println(user.(string))
+			log.Println(`*************************************************`)
+			if v, ok := user.(string); ok && v == superUserName {
 				return true
 			}
 
