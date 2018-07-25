@@ -16,8 +16,8 @@ func SetupRouter() *gin.Engine {
 	r.Use(gin.Logger())
 	r.Use(gin.Recovery())
 	r.GET(`/health`, GetHealth)
-	r.POST("/login", authMiddleware.LoginHandler)
-
+	r.POST(`/login`, authMiddleware.LoginHandler)
+	r.GET(`/hello`, helloHandler)
 	auth := r.Group("/auth")
 	auth.Use(authMiddleware.MiddlewareFunc())
 	{
@@ -42,9 +42,8 @@ func SetupRouter() *gin.Engine {
 }
 
 func helloHandler(c *gin.Context) {
-	claims := jwt.ExtractClaims(c)
+	log.Println(c.GetHeader(`Authorization`))
 	c.JSON(200, gin.H{
-		"userID": claims["id"],
 		"text":   "Hello World.",
 	})
 }
@@ -79,13 +78,12 @@ func ConfigureAuthMiddleware() *jwt.GinJWTMiddleware{
 		},
 		Authorizator: func(user interface{}, c *gin.Context) bool {
 			log.Println(`*************************************************`)
-			log.Println(user.(string))
+			log.Println(user)
 			log.Println(`*************************************************`)
-			if v, ok := user.(string); ok && v == superUserName {
-				return true
-			}
-
-			return false
+			//if v, ok := user.(string); ok && v == superUserName {
+			//	return true
+			//}
+			return true
 		},
 		Unauthorized: func(c *gin.Context, code int, message string) {
 			c.JSON(code, gin.H{
@@ -107,7 +105,8 @@ func ConfigureAuthMiddleware() *jwt.GinJWTMiddleware{
 		// TokenHeadName is a string in the header. Default value is "Bearer"
 		TokenHeadName: "Bearer",
 
-		// TimeFunc provides the current time. You can override it to use another time value. This is useful for testing or if your server uses a different time zone than your tokens.
+		// TimeFunc provides the current time. You can override it to use another time value. This is useful for
+		// testing or if your server uses a different time zone than your tokens.
 		TimeFunc: time.Now,
 	}
 }
