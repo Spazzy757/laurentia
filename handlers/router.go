@@ -78,11 +78,12 @@ func ConfigureAuthMiddleware() *jwt.GinJWTMiddleware{
 		},
 		Authorizator: func(user interface{}, c *gin.Context) bool {
 			log.Println(`*************************************************`)
-			log.Println(user)
+			log.Println(user.(string))
+			log.Println(user.(string) == superUserName)
 			log.Println(`*************************************************`)
-			//if v, ok := user.(string); ok && v == superUserName {
-			//	return true
-			//}
+			if user.(string) == superUserName {
+				return true
+			}
 			return true
 		},
 		Unauthorized: func(c *gin.Context, code int, message string) {
