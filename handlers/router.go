@@ -59,9 +59,10 @@ type User struct {
 func ConfigureAuthMiddleware() *jwt.GinJWTMiddleware{
 	superUserName := os.Getenv(`USERNAME`)
 	superUserPassword := os.Getenv(`PASSWORD`)
+	key := os.Getenv(`KEY`)
 	return &jwt.GinJWTMiddleware{
 		Realm:      "test zone",
-		Key:        []byte("secret key"),
+		Key:        []byte(key),
 		Timeout:    time.Hour,
 		MaxRefresh: time.Hour,
 		Authenticator: func(userId string, password string, c *gin.Context) (interface{}, bool) {
