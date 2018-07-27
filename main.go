@@ -10,8 +10,9 @@ func main() {
 	messageChan := make(chan string)
 	go messages.PubSubListener(messageChan)
 	go func() {
+		var msg string 
 		for {
-			msg := <-messageChan
+			msg = <-messageChan
 			log.Println(`*************************************************`)
 			log.Println("Main Message Routine")
 			log.Println(msg)

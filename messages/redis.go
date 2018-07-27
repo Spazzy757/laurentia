@@ -50,7 +50,7 @@ func PubSubListener(pubSubChannel chan string) {
 		msg, err := pubSub.ReceiveMessage()
 		if err != nil {log.Println("Pub Sub Failed to Receive Message")}
 		log.Println(err)
-		log.Println(msg)
+		log.Println(msg.Payload)
 		pubSubChannel <- msg.Payload
 		log.Println(msg)
 		log.Println(`*************************************************`)
