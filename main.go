@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	messageChan := make(chan string, 1)
+	messageChan := make(chan string)
 	go messages.PubSubListener(messageChan)
 	go func() {
 		for {
