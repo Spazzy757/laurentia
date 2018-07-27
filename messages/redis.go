@@ -2,8 +2,7 @@ package messages
 
 import (
 	"os"
-	"time"
-	"github.com/go-redis/redis"
+		"github.com/go-redis/redis"
 	"log"
 	"strings"
 	"encoding/json"
@@ -51,10 +50,11 @@ func PubSubListener(pubSubChannel chan string) {
 		msg, err := pubSub.ReceiveMessage()
 		if err != nil {log.Println("Pub Sub Failed to Receive Message")}
 		log.Println(err)
+		log.Println(msg)
 		pubSubChannel <- msg.Payload
 		log.Println(msg)
 		log.Println(`*************************************************`)
-		time.Sleep(1) // Be Kind To Redis
+		//time.Sleep(1) // Be Kind To Redis
 	}
 }
 
