@@ -95,7 +95,7 @@ func ConfigureAuthMiddleware() *jwt.GinJWTMiddleware{
 		// - "header:<name>"
 		// - "query:<name>"
 		// - "cookie:<name>"
-		TokenLookup: "header: Authorization",
+		TokenLookup: "header: Authorization, query: token",
 		// TokenLookup: "query:token",
 		// TokenLookup: "cookie:token",
 
