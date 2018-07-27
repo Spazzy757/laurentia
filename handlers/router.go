@@ -77,10 +77,6 @@ func ConfigureAuthMiddleware() *jwt.GinJWTMiddleware{
 			return nil, false
 		},
 		Authorizator: func(user interface{}, c *gin.Context) bool {
-			log.Println(`*************************************************`)
-			log.Println(user)
-			log.Println(user.(string) == superUserName)
-			log.Println(`*************************************************`)
 			if user.(string) == superUserName {
 				return true
 			}
