@@ -63,7 +63,9 @@ func AddMessageToChannel(msg string) {
 		return
 	}
 	m.Timestamp = time.Now()
-	MessageChannel <- *m
+	if len(clientList) > 0 {
+		MessageChannel <- *m
+	}
 }
 
 

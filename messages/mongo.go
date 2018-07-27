@@ -40,6 +40,7 @@ func SaveMessage (message string) (bool, error){
 		return false, errors.New(`invalid input`)
 	}
 	c := getCollection()
+	m.Timestamp = time.Now()
 	err := c.Insert(&m)
 	if err != nil {return false, err}
 	log.Println(m)
