@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/Spazzy757/laurentia/handlers"
 	"github.com/Spazzy757/laurentia/messages"
+	"log"
 )
 
 func main() {
@@ -11,9 +12,13 @@ func main() {
 	go func() {
 		for {
 			msg := <-messageChan
-			messages.SaveMessage(msg)
+			log.Println(`*************************************************`)
+			log.Println("Main Message Routine")
+			log.Println(msg)
+			log.Println(messages.SaveMessage(msg))
 			messages.VerifyMessageAndNotify(msg)
 			handlers.AddMessageToChannel(msg)
+			log.Println(`*************************************************`)
 		}
 	}()
 	r := handlers.SetupRouter()

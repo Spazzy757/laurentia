@@ -35,13 +35,13 @@ func SaveMessage (message string) (bool, error){
 	if err := json.Unmarshal([]byte(formatPythonDict(message)), &m); err != nil {
 		return false, err
 	}
+	log.Println(`*************************************************`)
 	if m.ID == "" {
 		return false, errors.New(`invalid input`)
 	}
 	c := getCollection()
 	err := c.Insert(&m)
 	if err != nil {return false, err}
-	log.Println(`*************************************************`)
 	log.Println(m)
 	log.Println(`*************************************************`)
 	return true, nil
