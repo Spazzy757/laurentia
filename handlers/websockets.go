@@ -57,13 +57,13 @@ func broadcastMessage(message *DynamicMessage) {
 
 
 func AddMessageToChannel(msg string) {
-	var m *DynamicMessage
-	if err := json.Unmarshal([]byte(formatPythonDict(msg)), &m); err != nil {
-		log.Println("Invalid Message")
-		return
-	}
-	m.Timestamp = time.Now()
 	if len(clientList) > 0 {
+		var m *DynamicMessage
+		if err := json.Unmarshal([]byte(formatPythonDict(msg)), &m); err != nil {
+			log.Println("Invalid Message")
+			return
+		}
+		m.Timestamp = time.Now()
 		MessageChannel <- *m
 	}
 }

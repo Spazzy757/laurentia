@@ -32,19 +32,12 @@ func getCollection () *mgo.Collection {
 
 func SaveMessage (message string) (bool, error){
 	var m *Message
-	if err := json.Unmarshal([]byte(formatPythonDict(message)), &m); err != nil {
-		return false, err
-	}
-	log.Println(`*************************************************`)
-	if m.ID == "" {
-		return false, errors.New(`invalid input`)
-	}
+	if err := json.Unmarshal([]byte(formatPythonDict(message)), &m); err != nil {return false, err}
+	if m.ID == "" {return false, errors.New(`invalid input`)}
 	c := getCollection()
 	m.Timestamp = time.Now()
 	err := c.Insert(&m)
 	if err != nil {return false, err}
-	log.Println(m)
-	log.Println(`*************************************************`)
 	return true, nil
 }
 

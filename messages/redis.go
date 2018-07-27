@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"net/http"
 	"bytes"
+	"time"
 )
 
 
@@ -45,16 +46,10 @@ func PubSubListener(pubSubChannel chan string) {
 	pubSub := client.Subscribe(channel)
 	defer pubSub.Close()
 	for {
-		log.Println(`*************************************************`)
-		log.Println("Waiting For Messages")
 		msg, err := pubSub.ReceiveMessage()
 		if err != nil {log.Println("Pub Sub Failed to Receive Message")}
-		log.Println(err)
-		log.Println(msg.Payload)
 		pubSubChannel <- msg.Payload
-		log.Println(msg)
-		log.Println(`*************************************************`)
-		//time.Sleep(1) // Be Kind To Redis
+		time.Sleep(0.1) // Be Kind To Redis
 	}
 }
 
