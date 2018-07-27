@@ -38,12 +38,12 @@ func SaveMessage (message string) (bool, error){
 	if m.ID == "" {
 		return false, errors.New(`invalid input`)
 	}
-	resp, _ := GetMessageByID(m.ID)
-	if (Message{}) == resp {
-		c := getCollection()
-		err := c.Insert(&m)
-		if err != nil {return false, err}
-	}
+	c := getCollection()
+	err := c.Insert(&m)
+	if err != nil {return false, err}
+	log.Println(`*************************************************`)
+	log.Println(m)
+	log.Println(`*************************************************`)
 	return true, nil
 }
 
