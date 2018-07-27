@@ -49,7 +49,7 @@ func PubSubListener(pubSubChannel chan string) {
 		msg, err := pubSub.ReceiveMessage()
 		if err != nil {log.Println("Pub Sub Failed to Receive Message")}
 		pubSubChannel <- msg.Payload
-		time.Sleep(0.1) // Be Kind To Redis
+		time.Sleep(1) // Be Kind To Redis
 	}
 }
 
